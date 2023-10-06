@@ -1,0 +1,276 @@
+import pandas as pd
+
+file_path = '/datasets/music_project_en.csv'
+df = pd.read_csv(file_path)
+description = df.describe()
+# reading the file and storing it to df 
+
+info_summary = df.info()    # obtaining general information about the data in df
+
+column_names = df.columns
+for column in column_names:
+    print(column) # the list of column names in the df table
+
+df.columns = df.columns.str.strip()  # Remove leading/trailing whitespace
+df.columns = df.columns.str.lower()  # Convert to lowercase
+df.columns = df.columns.str.replace(' ', '_', regex=False)  # renaming columns
+
+for column in df.columns:
+    print(column) # checking result: the list of column names
+
+missing_values_count = df.isnull().sum() # calculating missing values
+
+columns_to_replace = ['track', 'artist', 'genre']
+for column in columns_to_replace:
+    df[column].fillna('unknown', inplace=True) # looping over column names and replacing missing values with 'unknown'
+
+df.isnull().sum()  # counting missing values
+
+num_duplicates = df.duplicated().sum()
+ # counting clear duplicates
+
+df= df.drop_duplicates()
+ # removing obvious duplicates
+
+df_no_duplicates = df.drop_duplicates()
+num_duplicates_after_removal = df_no_duplicates.duplicated().sum()
+print("Number of obvious duplicates after removal:", num_duplicates_after_removal)
+
+sorted_unique_genres = df['genre'].sort_values().unique()
+for genre in sorted_unique_genres:
+    print(genre) # viewing unique genre names
+
+def replace_wrong_genres (wrong_genres, correct_genre):
+    for wrong_genre in wrong_genres:
+        df['genre'] = df['genre'].replace(wrong_genre, correct_genre) 
+wrong_genres = ['hip', 'hop', 'hip-hop']
+correct_genre = 'hip-hop'
+replace_wrong_genres(wrong_genres, correct_genre)
+
+def replace_wrong_genres (wrong_genres, correct_genre):
+    for wrong_genre in wrong_genres:
+        df['genre'] = df['genre'].replace(wrong_genre, correct_genre) 
+wrong_genres = ['hip', 'hop', 'hip-hop']
+correct_genre = 'hiphop'
+replace_wrong_genres(wrong_genres, correct_genre)
+ # removing implicit duplicates
+
+unique_genres = df['genre'].unique()
+print(unique_genres) # checking for implicit duplicates
+
+df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_') 
+grouped_data = df.groupby(['city', 'day'])['track'].count()
+print(grouped_data)
+ # Counting up the tracks played in each city
+
+grouped_data = df.groupby('day')['track'].count()
+print(grouped_data)  # Calculating tracks played on each of the three days
+
+import pandas as pd
+
+
+file_path = '/datasets/music_project_en.csv'
+df = pd.read_csv(file_path)
+
+
+df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
+display(df)
+
+def number_tracks(day, city):
+    filtered_data = df.loc[(df['day'] == day) & (df['city'] == city)]
+    display(filtered_data)
+    tracks_played = filtered_data['userid'].count()  # Count the number of 'user_id' values
+    return tracks_played
+
+
+
+# We'll declare a function with two parameters: day=, city=.
+# Let the track_list variable store the df rows where
+# the value in the 'day' column is equal to the day= parameter and, at the same time, 
+# the value in the 'city' column is equal to the city= parameter (apply consecutive filtering 
+# with logical indexing).
+# Let the track_list_count variable store the number of 'user_id' column values in track_list
+# (found with the count() method).
+# Let the function return a number: the value of track_list_count.
+
+# The function counts tracked played for a certain city and day.
+# It first retrieves the rows with the intended day from the table,
+# then filters out the rows with the intended city from the result,
+# then finds the number of 'user_id' values in the filtered table,
+# then returns that number.
+# To see what it returns, wrap the function call in print().
+
+springfield_on_monday = number_tracks('Monday', 'Springfield')
+display(springfield_on_monday)
+
+
+shelbyville_on_monday = number_tracks('Monday', 'Shelbyville')
+
+springfield_on_wednesday = number_tracks('Wednesday', 'Springfield') # the number of songs played in Springfield on Wednesday
+
+shelbyville_on_wednesday = number_tracks('Wednesday', 'Shelbyville') # the number of songs played in Shelbyville on Wednesday
+
+springfield_on_friday = number_tracks('Friday', 'Springfield') # the number of songs played in Springfield on Friday
+
+shelbyville_on_friday = number_tracks('Friday', 'Shelbyville') # the number of songs played in Shelbyville on Friday
+
+results = []
+
+for city in ['Springfield', 'Shelbyville']:
+    monday = number_tracks('Monday', city)
+    wednesday = number_tracks('Wednesday', city)
+    friday = number_tracks('Friday', city)
+    
+    results.append({'city': city, 'monday': monday, 'wednesday': wednesday, 'friday': friday})
+
+results_df = pd.DataFrame(results)
+print(results_df)
+# table with results
+
+def filter_data(city, day_part):
+    filtered_data = df[(df['city'] == city) & (df['time'] == day_part)]
+    return filtered_data
+monday_morning = '06:00-11:59'
+friday_night = '18:00-23:59'
+
+spr_monday_morning = filter_data('Springfield', monday_morning)
+spr_friday_night = filter_data('Springfield', friday_night)
+
+def filter_data(city, day_part):
+    filtered_data = df[(df['city'] == city) & (df['time'] == day_part)]
+    return filtered_data
+monday_morning = '06:00-11:59'
+friday_night = '18:00-23:59'
+
+shel_monday_morning = filter_data('Shelbyville', monday_morning)
+shel_friday_night = filter_data('Shelbyville', friday_night)
+
+spr_general = pd.concat([spr_monday_morning, spr_friday_night])
+shel_general = pd.concat([shel_monday_morning, shel_friday_night])
+
+import pandas as pd
+
+
+file_path = '/datasets/music_project_en.csv'
+df = pd.read_csv(file_path)
+
+
+df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
+
+def genre_weekday(data, day, time1, time2):
+    
+    genre_df = data[(data['day'] == day) & (data['time'] >= time1) & (data['time'] <= time2)]
+
+    
+    genre_df_count = genre_df['genre'].value_counts()
+
+    
+    genre_df_sorted = genre_df_count.sort_values(ascending=False)
+
+    
+    return genre_df_sorted[:15]
+
+
+day = 'Monday'
+time1 = '07:00'
+time2 = '11:00'
+
+
+top_genres = genre_weekday(df, day, time1, time2)
+
+
+print("Top 15 popular genres on Monday from 07:00 to 11:00:")
+print(top_genres)
+
+# 1) Let the genre_df variable store the rows that meet several conditions:
+#    - the value in the 'day' column is equal to the value of the day= argument
+#    - the value in the 'time' column is greater than the value of the time1= argument
+#    - the value in the 'time' column is smaller than the value of the time2= argument
+#    Use consecutive filtering with logical indexing.
+
+# 2) Group genre_df by the 'genre' column, take one of its columns, 
+#    and use the count() method to find the number of entries for each of 
+#    the represented genres; store the resulting Series to the
+#    genre_df_count variable
+
+# 3) Sort genre_df_count in descending order of frequency and store the result
+#    to the genre_df_sorted variable
+
+# 4) Return a Series object with the first 15 genre_df_sorted value - the 15 most
+#    popular genres (on a given day, within a certain timeframe)
+
+# Write your function here
+
+
+
+    # consecutive filtering
+    # Create the variable genre_df which will store only those df rows where the day is equal to day=
+    
+    # filter again so that genre_df will store only those rows where the time is smaller than time2=
+
+    # filter once more so that genre_df will store only rows where the time is greater than time1=
+
+    # group the filtered DataFrame by the column with the names of genres, take the genre column, and find the number of rows for each genre with the count() method
+    
+    # sort the result in descending order (so that the most popular genres come first in the Series object)
+    
+
+    # we will return the Series object storing the 15 most popular genres on a given day in a given timeframe
+
+
+spr_general = df[df['city'] == 'Springfield']
+shel_general = df[df['city'] == 'Shelbyville']
+
+def genre_weekday(data, day, time1, time2):
+   
+    genre_df = data[(data['day'] == day) & (data['time'] >= time1) & (data['time'] <= time2)]
+    genre_df_count = genre_df['genre'].value_counts()
+    genre_df_sorted = genre_df_count.sort_values(ascending=False)
+    return genre_df_sorted[:15]
+
+
+monday_morning_time1 = '07:00'
+monday_morning_time2 = '11:00'
+
+spr_monday_morning = genre_weekday(spr_general, 'Monday', monday_morning_time1, monday_morning_time2)
+
+print("Top genres for Springfield on Monday morning:")
+print(spr_monday_morning)
+
+
+ # calling the function for Monday morning in Springfield (use spr_general instead of the df table)
+
+monday_morning_time1 = '07:00'
+monday_morning_time2 = '11:00'
+
+shel_monday_morning = genre_weekday(shel_general, 'Monday', monday_morning_time1, monday_morning_time2)
+# calling the function for Monday morning in Shelbyville (use shel_general instead of the df table)
+shel_monday_morning
+
+friday_evening_time1 = '17:00'
+friday_evening_time2 = '23:00'
+
+spr_friday_evening = genre_weekday(spr_general, 'Friday', friday_evening_time1, friday_evening_time2) # calling the function for Friday evening in Springfield
+spr_friday_evening
+
+friday_evening_time1 = '17:00'
+friday_evening_time2 = '23:00'
+
+shel_friday_evening = genre_weekday(shel_general, 'Friday', friday_evening_time1, friday_evening_time2) # calling the function for Friday evening in Shelbyville
+shel_friday_evening
+
+spr_genres = spr_general['genre'].value_counts().sort_values(ascending=False) # on one line: group the spr_general table by the 'genre' column, 
+# count the 'genre' values with count() in the grouping, 
+# sort the resulting Series in descending order, and store it to spr_genres
+
+print(spr_genres.head(10))
+# printing the first 10 rows of spr_genres
+
+shel_genres = shel_general['genre'].value_counts().sort_values(ascending=False)
+ # on one line: group the shel_general table by the 'genre' column, 
+# count the 'genre' values in the grouping with count(), 
+# sort the resulting Series in descending order and store it to shel_genres
+
+print(shel_genres.head(10))
+ # printing the first 10 rows from shel_genres
+
