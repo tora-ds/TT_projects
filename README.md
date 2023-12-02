@@ -12,3 +12,5 @@ Projects I worked on while attending the Data Science Bootcamp.
 | 6 | Data Collection and Storage (SQL) | You're working as an analyst for Zuber, a new ride-sharing company that's launching in Chicago. Your task is to find patterns in the available information. You want to understand passenger preferences and the impact of external factors on rides. | 
 | 7 | Introduction to Machine Learning | Mobile carrier Megaline has found out that many of their subscribers use legacy plans. They want to develop a model that would analyze subscribers' behavior and recommend one of Megaline's newer plans: Smart or Ultra. |
 | 8 | Supervised Learning | Beta Bank customers are leaving: little by little, chipping away every month. The bankers figured out it’s cheaper to save the existing customers rather than to attract new ones. |
+| 9 | Machine Learning in Business | You work for the OilyGiant mining company. Your task is to find the best place for a new well. | 
+| 10 | Integrated project 2 | You have the raw data that was only downloaded from the warehouse. Before building the model, check the correctness of the data. For that, use our instructions. |
